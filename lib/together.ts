@@ -29,6 +29,9 @@ export async function callModel({
     },
   ];
 
+  console.log("MODEL:", model);
+  console.log("MESSAGES:", JSON.stringify(messages, null, 2));
+
   const response = await fetch("https://api.together.xyz/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -38,18 +41,29 @@ export async function callModel({
     body: JSON.stringify({
       model,
       messages,
+      reasoning: { enabled: false },
       max_tokens: 512,
-      temperature: 0.7,
+      temperature: 0.5,
     }),
   });
 
   if (!response.ok) {
     const text = await response.text();
+    console.error("TOGETHER ERROR:", text);
     throw new Error(`TogetherAI error ${response.status}: ${text}`);
   }
 
   const data = await response.json();
-  const reply = data?.choices?.[0]?.message?.content ?? "";
+  console.log("RAW RESPONSE:", JSON.stringify(data, null, 2));
+
+  const reply =
+    data?.choices?.[0]?.message?.content ??
+    data?.choices?.[0]?.text ??
+    "";
+
+  if (!reply.trim()) {
+    return "⚠️ Model returned empty response";
+  }
 
   return reply.trim();
 }
