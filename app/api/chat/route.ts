@@ -1,11 +1,13 @@
 import { getContext } from "@/lib/context";
 import { callModel } from "@/lib/together";
 
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type",
 };
+
 
 export async function OPTIONS() {
   return new Response(null, {
@@ -14,10 +16,12 @@ export async function OPTIONS() {
   });
 }
 
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const message = body?.message;
+
 
     if (!message || typeof message !== "string") {
       return new Response(
@@ -32,8 +36,10 @@ export async function POST(req: Request) {
       );
     }
 
+
     const context = await getContext(message);
     const output = await callModel({ message, context });
+
 
     return new Response(JSON.stringify({ output }), {
       status: 200,
@@ -44,6 +50,7 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error(error);
+
 
     return new Response(
       JSON.stringify({ error: "Internal server error" }),
