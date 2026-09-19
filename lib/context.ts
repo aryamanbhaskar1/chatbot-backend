@@ -1,7 +1,10 @@
 import OpenAI from "openai";
 import { Pinecone } from "@pinecone-database/pinecone";
 
-export async function getContext(message: string): Promise<string> {
+export async function getContext(
+  message: string,
+  personality?: string
+): Promise<string> {
   const openaiKey = process.env.OPENAI_API_KEY;
   const pineconeKey = process.env.PINECONE_API_KEY;
   const indexName = process.env.PINECONE_INDEX_NAME;
@@ -26,10 +29,19 @@ export async function getContext(message: string): Promise<string> {
   const index = pinecone.index(indexName);
 
   // 4. Query Pinecone
+  // If a personality is supplied, only retrieve chunks for that personality.
+  // If not, preserve the old unfiltered behavior for backwards compatibility.
   const queryResponse = await index.query({
     vector,
     topK: 5,
     includeMetadata: true,
+    ...(personality
+      ? {
+          filter: {
+            personality: { $eq: personality },
+          },
+        }
+      : {}),
   });
 
   const matches = queryResponse.matches || [];
@@ -40,6 +52,7 @@ export async function getContext(message: string): Promise<string> {
       id: match.id,
       score: match.score,
       source: match.metadata?.sources,
+      personality: match.metadata?.personality,
       preview:
         typeof match.metadata?.text === "string"
           ? match.metadata.text.slice(0, 250)
