@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# ImasonsGPT — RAG Chatbot Backend
 
-First, run the development server: 
+Backend for ImasonsGPT, an LLM-powered application developed through the NYU Business Analytics Club's Machine Learning team.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The system uses retrieval-augmented generation (RAG) to answer questions grounded in expert-interview transcripts, combining vector retrieval with an LLM to generate context-aware responses.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Architecture
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Transcript processing:** Interview transcripts are processed and divided into retrieval-friendly chunks.
+2. **Embedding and indexing:** OpenAI embeddings are used to represent transcript passages, with Pinecone handling vector storage and retrieval.
+3. **Response generation:** Relevant passages are retrieved and passed to Qwen through Together AI to generate responses grounded in the source material.
+4. **API and deployment:** The backend uses Next.js and TypeScript, integrates with the application's frontend, and is deployed through Vercel.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Tech Stack
 
-## Learn More
+- Next.js / TypeScript
+- Qwen via Together AI
+- OpenAI Embeddings
+- Pinecone
+- Vercel
 
-To learn more about Next.js, take a look at the following resources:
+## Related Work
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The transcript-processing pipeline is available in the [semantic-chunking repository](https://github.com/aryamanbhaskar1/semantic-chunking).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Developed as a collaborative ML project through NYU Business Analytics Club.
